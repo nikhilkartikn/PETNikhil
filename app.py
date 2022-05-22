@@ -106,7 +106,7 @@ def addmoneypage() :
 @app.route("/chart", methods=['GET','POST'])
 def chart():
     
-    user='nbalu@gmail.com'
+    user='nikhil@gmail.com'
     expense_date_from=''
     expense_date_to=''
     params = "user="+user+"&expense_date_from="+expense_date_from+"&expense_date_to="+expense_date_to
@@ -116,8 +116,9 @@ def chart():
     exp_dates = []
     for d in series_new:
         for k,v in d.items():
-            if k == 'expense_date':
-                exp_dates.append(v)
+            if k == 'user+date':
+		temporary = v.split("+")
+                exp_dates.append(temporary[1])
     print(exp_dates)
     home_expenses = []
     for d in series_new:
