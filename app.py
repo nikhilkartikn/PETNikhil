@@ -13,21 +13,21 @@ random.seed()  # Initialize the random number generator
 # Function to add a specific expense for a user - AWS API Add Expense for a user
 def setExpenses(params): 
     print(params)
-    url = "https://ket0h58q15.execute-api.ap-south-1.amazonaws.com/ExpenseAPI?"+params
+    url = "https://8l94nd81q0.execute-api.us-east-1.amazonaws.com/API_deploy_push_expense_data?"+params
     status = requests.request("GET",url)
     print(status.json())
     return status.json()
 
 # Function to fetch expenses of a user - AWS API Expense Summary
 def fetchExpenses(params):
-    url="https://5996kr662d.execute-api.ap-south-1.amazonaws.com/ExpenseQA?"+params
+    url="https://ho7nzjgyl3.execute-api.us-east-1.amazonaws.com/API_deploy_fetchexpensedata?"+params
     status = requests.request("GET",url)
     print(status.json())
     return status.json()
 
 # Function to fetch wallet balance - AWS API Wallet Balance
 def walletBalance(params):
-    url="https://ss979hyehb.execute-api.ap-south-1.amazonaws.com/WalletBalance?"+params
+    url="https://y8becolo7a.execute-api.us-east-1.amazonaws.com/API_deploy_retrieve_walletbalance?"+params
     status = requests.request("GET",url)
     print(status.json())
     return status.json()
@@ -35,14 +35,14 @@ def walletBalance(params):
 
 # Function to check user credentials - AWS API User Details
 def check(user):
-    url="https://nirmgp3j2c.execute-api.ap-south-1.amazonaws.com/fetchuser?user="+user  
+    url="https://1z04lz640a.execute-api.us-east-1.amazonaws.com/API_deploy_fetchUserDetails?user="+user  
     status = requests.request("GET",url)
     print(status.json())
     return status.json()
 
 # Function to add amount to wallet - AWS API Add Money to Wallet
 def updatewallet(params):
-    url="https://l1gdzvb6k6.execute-api.ap-south-1.amazonaws.com/addwallamount?"+params 
+    url="https://mdxaatgdq5.execute-api.us-east-1.amazonaws.com/API_deploy_add_money_to_wallet?"+params 
     status = requests.request("GET",url)
     print(status.json())
     return status.json()
@@ -213,7 +213,7 @@ def register():
 	    passw = request.form.get('passw')
 	    params="name="+name+"&user="+user+"&phone="+phone+"&city="+city+"&occupation="+occupation+"&passw="+passw
 	    if('errorType' in check(user)):
-	    	url = "https://nqwsosw3ag.execute-api.ap-south-1.amazonaws.com/QA?"+params
+	    	url = "https://kuyucjcq7a.execute-api.us-east-1.amazonaws.com/API_deploy_register_userinfo?"+params
 	    	response = requests.get(url)
 	    	return render_template('register.html', pred="Registration Successful, please login using your details")
 	    else:
