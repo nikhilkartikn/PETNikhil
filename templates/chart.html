@@ -84,6 +84,26 @@ var dataThird = {
     fill: true,
 	borderColor: 'green'
   };
+	
+var dataFourth = {
+    label: "Travel Expenses",
+    data: [{% for item in travel_expenses %}
+				{{item}},
+			{% endfor %}],
+    lineTension: 0,
+    fill: true,
+	borderColor: 'orange'
+  };
+	
+var dataFifth = {
+    label: "Food Expenses",
+    data: [{% for item in food_expenses %}
+				{{item}},
+			{% endfor %}],
+    lineTension: 0,
+    fill: true,
+	borderColor: 'brown'
+  };
 
 /*var dataSecond = {
     label: "Medical Expenses",
@@ -108,7 +128,7 @@ var chartData = {
 		labels : 	[{% for item in labels %}
 					"{{item}}",
 					{% endfor %}],
-		datasets: [dataFirst, dataSecond, dataThird],
+		datasets: [dataFirst, dataSecond, dataThird,dataFourth,dataFifth],
 			axisX:{
 			tickColor: "red",
 			tickLength: 5,
