@@ -5,7 +5,7 @@ import random
 import time
 from datetime import datetime
 from datetime import timedelta
-
+from dateutil.relativedelta import *
 
 app = Flask(__name__)
 app.permanent_session_lifetime = timedelta(minutes = 15)
@@ -55,6 +55,7 @@ def updatewallet(params):
 
 @app.route('/')
 @app.route('/home')
+@app.route('/nikhil')
 def home():
     title = "Personal Expense Tracker"
     
@@ -84,14 +85,80 @@ def dashboard():
     data=walletBalance(params)
     print(type(data))
     #print(data)
-    result = data.split("+")
+    result = data.split("+") #5450+You're beyond the critical limit(Rs 5000)
     wbalance=result[0] 
     message=result[1]
-    print(wbalance,message)    
+    
+    series_new=fetchExpenses(params)
+    test_date=datetime.now()
+    #datetime.timedelta(days=14)
+    ans = test_date-timedelta(days=7)
+    end_date = str(datetime.now()).split()
+    start_date = str(ans).split()
+    d1 = int(datetime.strptime(start_date[0], '%Y-%m-%d').timestamp())
+    d2 = int(datetime.strptime(end_date[0],'%Y-%m-%d').timestamp())
+    print("d1 "+str(d1))
+    print("d2 "+str(d2))
+    weekly_expenses = 0
+    for d in series_new:
+        #print("hgsg")
+        print(int(d['longdate']))
+        if(int(d['longdate']) >= d1 and int(d['longdate']) <= d2):
+            #print("hello mate")
+            weekly_expenses += int(d['vehicle_expenses'])+int(d['food_expenses'])+int(d['travel_expenses'])+int(d['medical_expenses'])+int(d['home_expenses'])
+        elif(int(str(d['longdate'])[0:5])==int(str(d1)[0:5]) or int(str(d['longdate'])[0:5])==int(str(d2)[0:5])):
+            weekly_expenses += int(d['vehicle_expenses'])+int(d['food_expenses'])+int(d['travel_expenses'])+int(d['medical_expenses'])+int(d['home_expenses'])
+            
+    ans = test_date+relativedelta(months=-1)
+    print("last month date is "+ str(ans))
+    end_date = str(datetime.now()).split()
+    start_date = str(ans).split()
+    d1 = int(datetime.strptime(start_date[0], '%Y-%m-%d').timestamp())
+    d2 = int(datetime.strptime(end_date[0],'%Y-%m-%d').timestamp())
+    print("d1 "+str(d1))
+    print("d2 "+str(d2))
+    monthly_expenses = 0;vehicle_sum = 0;food_sum=0;medical_sum=0;travel_sum=0;home_sum=0
+    for d in series_new:
+        #print("blah")
+        print(int(d['longdate']))
+        if(int(d['longdate']) >= d1 and int(d['longdate']) <= d2):
+            #print('hello world')
+            monthly_expenses += int(d['vehicle_expenses'])+int(d['food_expenses'])+int(d['travel_expenses'])+int(d['medical_expenses'])+int(d['home_expenses'])
+            vehicle_sum += int(d['vehicle_expenses'])
+            food_sum += int(d['food_expenses'])
+            travel_sum += int(d['travel_expenses'])
+            medical_sum += int(d['medical_expenses'])
+            home_sum += int(d['home_expenses'])
+        elif(int(str(d['longdate'])[0:5])==int(str(d1)[0:5]) or int(str(d['longdate'])[0:5])==int(str(d2)[0:5])):
+            monthly_expenses += int(d['vehicle_expenses'])+int(d['food_expenses'])+int(d['travel_expenses'])+int(d['medical_expenses'])+int(d['home_expenses'])
+            vehicle_sum += int(d['vehicle_expenses'])
+            food_sum += int(d['food_expenses'])
+            travel_sum += int(d['travel_expenses'])
+            medical_sum += int(d['medical_expenses'])
+            home_sum += int(d['home_expenses'])
+    #print(wbalance,message)
+    maximum_sum = max(vehicle_sum,travel_sum,home_sum,medical_sum,food_sum)
+    print(vehicle_sum)
+    print(travel_sum)
+    print(home_sum)
+    print(medical_sum)
+    print(food_sum)
+    print(maximum_sum)
+    if(maximum_sum == vehicle_sum):
+        highestval = "vehicle expenses"
+    elif(maximum_sum == travel_sum):
+        highestval = "travel expenses"
+    elif(maximum_sum == home_sum):
+        highestval = "home expenses"
+    elif(maximum_sum == medical_sum):
+        highestval = "medical expenses"
+    elif(maximum_sum == food_sum):
+        highestval = "food expenses"
+        
     if('errorType' in result):
           return render_template('login.html', pred="Wallet could not be updated. Your wallet balance has not changed.")
     else:
-        return render_template('dashboard.html', pred=wbalance, message=message)
+        return render_template('dashboard.html', pred=wbalance, message=message,weekly_expenses=weekly_expenses,monthly_expenses=monthly_expenses,most_spent = highestval)
 
 # Function to add amount to wallet - AWS API Add money to wallet
 @app.route('/addmoneypage', methods=['GET','POST'])
@@ -176,7 +243,7 @@ def loginpage():
     user = request.form['user']
     passw = request.form['passw']
     print(user,passw)
-    data = check(user)
+    data = check(user) #API check for user exisiting in db or not
     print(type(data))
     checker = isinstance(data,str) #written to check whether a particular value is a string or not. Returns true or false
     #print(type(checker))
@@ -215,13 +282,11 @@ def expensepage() :
             params = "user="+user+"&expensedate="+expensedate+"&medical_expenses="+"0"+"&home_expenses="+"0"+"&vehicle_expenses="+expenseamount+"&travel_expenses="+"0"+"&food_expenses="+"0"
         elif(category=='travel_expenses'):
             params =  "user="+user+"&expensedate="+expensedate+"&medical_expenses="+"0"+"&home_expenses="+"0"+"&vehicle_expenses="+"0"+"&travel_expenses="+expenseamount+"&food_expenses="+"0"
-        elif(category=='travel_expenses'):
+        elif(category=='food_expenses'):
             params =  "user="+user+"&expensedate="+expensedate+"&medical_expenses="+"0"+"&home_expenses="+"0"+"&vehicle_expenses="+"0"+"&travel_expenses="+"0"+"&food_expenses="+expenseamount
         else:
             render_template('expense.html', pred="Expense type is unauthorized in system.")
-
         response = setExpenses(params)
-
         json_object = json.dumps(response)
         print(json_object)
         if('errorType' in json_object):
