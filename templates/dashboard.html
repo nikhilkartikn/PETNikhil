@@ -83,11 +83,24 @@
 		<div class="big my-5">
 			<div class="ext1">
 				<font size="5px">{{b}}</font>
-				<br>
-				<b>Wallet Balance {{ pred }}</b>
+				<b>Wallet Balance</b><br/><b> {{ pred }}</b>
 			</div>
   	</div>
-  	<div style="color:mediumvioletred;" align=center><h2>{{ message }}</h2></div>
+  	<div style="color:rgb(240, 83, 10);" align=center><h2>{{ message }}</h2></div>
+	<div class = "row align-items-start"> 
+		<div class="ext1 col align-self-start">
+			<font size="5px">{{b}}</font>
+			<b>Weekly Expenses</b><br/><b>{{weekly_expenses}}</b><br/>
+		</div>
+		<div class="ext1 col align-self-center">
+			<font size="5px">{{b}}</font>
+			<b>Monthly Expenses</b><br/><b> {{monthly_expenses}}</b><br/>
+		</div>
+		<div class="ext1 col align-self-end">
+			<font size="5px">{{b}}</font>
+			<b>Highest Expenditure In:</b><br/><b> {{ most_spent }}</b><br/>
+		</div>
+	</div>
   <!--div class="row my-1">
     <div class="col" >
 		<div class="ext">{{b1}}<br><b><h4>Vehicle Expenses</h4></b></div>
